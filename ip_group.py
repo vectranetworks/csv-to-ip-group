@@ -79,6 +79,8 @@ def obtain_args():
                                                  'group name,10.1.1.1.0,255.255.255.0,some description',
                                      prefix_chars='--', formatter_class=argparse.RawTextHelpFormatter,
                                      epilog='')
+    parser.add_argument('brain', type=str, help='Hostname or IP of Congito Detect brain')
+    parser.add_argument('token', type=str, help='API token to access Cognito Detect')
     parser.add_argument('file', type=str, help='Name of csv input file')
     parser.add_argument('--sub_char', default=False, type=str, help='Override default invalid character '
                                                                     'substitution in group names and '
@@ -105,8 +107,7 @@ def main():
     file = args.file
 
     with open(file, newline='') as csvfile:
-        vc = vectra.VectraClientV2_1(url='https://vhe.pieklab.local', token='7bd8169565eeadae0359ccd7021d1d30b86f32f1',
-                                     verify=False)
+        vc = vectra.VectraClientV2_1(url='https://' + args.brain, token=args.token, verify=False)
 
         reader = csv.reader(csvfile)
 
