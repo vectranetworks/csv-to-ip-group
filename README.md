@@ -24,13 +24,13 @@ pip3 install -r requirements.txt
 The CSV file can include a CSV header row.  
 The CSV file can contain either 3 or 4 columns of data, and can include a description.    
 
-###3-column format (subnet in CIDR notation) example:
+### 3-column format (subnet in CIDR notation) example:
 ```
 group 1,10.1.1.0/24, group 1 description
 group 1,10.1.2.0/24,
 group 2,10.2.0.0/16, group 2 description
 ```
-###4-column format (subnet in netmask notation) example:
+### 4-column format (subnet in netmask notation) example:
 ```
 group 1,10.1.1.0,255.255.255.0, group 1 description
 group 1,10.1.2.0,255.255.255.0,
