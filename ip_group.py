@@ -22,9 +22,14 @@ requests.packages.urllib3.disable_warnings()
 
 
 def ip_subnet(subnet_string):
-    #  Called with string that represents an IP subnet with CIDR or netmask in dotted decimal format
-    #  Validates string represents valid subnet
-    #  Returns string representation of subnet in CIDR format
+    """
+    Called with string that represents an IP subnet with CIDR or netmask in dotted decimal format
+
+    Validates string represents valid subnet and removes host bits
+    Returns string representation of subnet in CIDR format
+    :param subnet_string: string representing subnet in CIDR w.x.y.z/n or netmask w.x.y.z/aa.bb.cc.dd format
+    :return: returns string representation of subnet in CIDR format
+    """
     try:
         ipaddress.IPv4Network(subnet_string)
     except (ipaddress.AddressValueError, ipaddress.NetmaskValueError) as error:
@@ -37,15 +42,27 @@ def ip_subnet(subnet_string):
 
 
 def sub_bad_chars(string, sub=SUB_CHAR):
+    """
+    Substitute unsupported characters in string representing group
+
+    :param string: original string
+    :param sub:  substitution character, default defined in SUB_CHAR
+    :return:  returns the original string with any illegal characters substituted
+    """
     for bad_char in INVALID_CHARS:
         string = string.replace(bad_char, sub)
     return string
 
 
 def group_exists(group_name, brain):
-    #  Called with initialized vectra client and name of group
-    #  Returns group name and ID in dictionary if group exists, False otherwise
-    #  Substitute illegal characters
+    """
+    Determines if group exists
+
+    Called with initialized vectra client and name of group
+    :param group_name: group name
+    :param brain: initialized Vectra Client object
+    :return: True if group exists, False otherwise
+    """
     group_iterator = brain.get_all_groups(name=group_name)
     for item in group_iterator:
         if item.json()['count'] > 0:
@@ -56,6 +73,14 @@ def group_exists(group_name, brain):
 
 
 def create_group(name, subnet, brain, descr=''):
+    """
+    Creates group and adds supplied subnet, and description if supplied
+
+    :param name: group name
+    :param subnet: CIDR subnet string
+    :param brain: initialized Vectra Client object
+    :param descr: group description, optional
+    """
     if bool(descr):
         brain.create_group(name=name, description=descr, type='ip', members=list(subnet))
     else:
@@ -63,6 +88,14 @@ def create_group(name, subnet, brain, descr=''):
 
 
 def update_group(grp_id, subnet, brain, descr=''):
+    """
+    Updates existing group with supplied subnet, and description if supplied
+
+    :param grp_id: group ID
+    :param subnet: CIDR subnet string
+    :param brain: initialized Vectra Client object
+    :param descr: group description, optional
+    """
     if bool(descr):
         brain.update_group(group_id=grp_id, description=descr, members=subnet, append=True)
     else:
@@ -93,6 +126,13 @@ def obtain_args():
 
 
 def main():
+    """
+    Supplied with valid CSV file containing 3 or 4 columns of data, iterates over rows and creates or updates groups
+
+    Supports CSV files with following format examples with or without header row
+    group 1,192.168.1.0/255.255.255.0,group1 description
+    group 2,10.1.1.0/24,group2 description
+    """
     args = obtain_args()
 
     sub_char = args.sub_char if args.sub_char else SUB_CHAR
@@ -130,7 +170,7 @@ def main():
             group_name = sub_bad_chars(row[0], sub_char)
 
             if subnet is not None:
-                # group_obj False or {'name': 'somename', 'id':'123'}
+                """group_obj False or {'name': 'somename', 'id':'123'}"""
                 group_obj = group_exists(group_name, vc)
 
                 if not group_obj:
