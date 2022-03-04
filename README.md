@@ -58,7 +58,7 @@ python3 ip_group.py <brain IP/hostname> <cognito_token> subnet_data.csv -a
 ```
  
 The **-a** flag will force the script to use the CSV as the *plan of record* and update the groups in Cognito 
-to match the contents of the CSV.  
+to match the contents of the CSV.  Without the **-a** flag the script will update existing groups only from the contents of the CSV.  
  
 ## Help Output
 ```
