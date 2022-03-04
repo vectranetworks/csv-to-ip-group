@@ -1,7 +1,8 @@
 # ip_group
 
 ip_group.py is a python script that creates or updates IP Groups in Cognito Detect via Detect's API from a CSV formatted
-list.
+list.  The script now has better error handling and will attempt to catch any errors and print them out at the 
+conclusion of the run.
 
 ## Prerequisites
 
@@ -53,36 +54,41 @@ When ran, the script needs to be supplied one or more parameters.  Example:
 
 
 ```
-python3 ip_group.py <brain IP/hostname> <cognito_token> subnet_data.csv
+python3 ip_group.py <brain IP/hostname> <cognito_token> subnet_data.csv -a
 ```
  
+The **-a** flag will force the script to use the CSV as the *plan of record* and update the groups in Cognito 
+to match the contents of the CSV.  
  
 ## Help Output
-
-python3 ip_group.py -h  
-usage: ip_group.py [-h] [--sub_char SUB_CHAR] [--verbose] brain token file  
+```
+python3 ip_group.py -h
+usage: ip_group.py [-h] [-a] [-d] [--sub_char SUB_CHAR] [--verbose]
+                   brain token file
 
 Supplied with name of CSV input file, creates or updates IP groups with supplied subnet information.  
 CSV file format: group_name,subnet,description
 
-Subnet can be supplied in CIDR notation e.g.  
-group name,10.1.1.0/24,some description  
+Subnet can be supplied in CIDR notation e.g. 
+group name,10.1.1.0/24,some description
 
-or as subnet and netmask separate by a comma (,) e.g.  
+or as subnet and netmask separate by a comma (,) e.g.
 group name,10.1.1.1.0,255.255.255.0,some description
 
-positional arguments:  
-  brain                Hostname or IP of Congito Detect brain  
-  token                API token to access Cognito Detect  
-  file                 Name of csv input file  
+positional arguments:
+  brain                Hostname or IP of Congito Detect brain
+  token                API token to access Cognito Detect
+  file                 Name of csv input file
 
-optional arguments:  
-  -h, --help           show this help message and exit  
-  --sub_char SUB_CHAR  Override default invalid character substitution in group names and description.  Default is _  
-                       May not be one of the following characters  
-                       ['~', '#', '$', '^', '+', '=', '<', '>', '?', ';']  
+optional arguments:
+  -h, --help           show this help message and exit
+  -a, --authoritative  Data contained in CSV is authoritative.  Group information will be overwritten where necessary.
+  -d, --dryrun         Do dry run, no updates to Cognito
+  --sub_char SUB_CHAR  Override default invalid character substitution in group names and description.  Default is _
+                       May not be one of the following characters
+                       ['~', '#', '$', '^', '+', '=', '<', '>', '?', ';']
   --verbose            Verbose logging  
-
+```
 
 ## Authors
 
