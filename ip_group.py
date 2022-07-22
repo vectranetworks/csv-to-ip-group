@@ -240,6 +240,25 @@ def group_missing_values(new_group, existing_group):
         return False, None
 
 
+def det_bom(infile):
+    with open(infile, "rb") as file:
+        beginning = file.read(4)
+        # The order of these if-statements is important
+        # otherwise UTF32 LE may be detected as UTF16 LE as well
+        if beginning == b'\x00\x00\xfe\xff':
+            return "utf-32-be"
+        elif beginning == b'\xff\xfe\x00\x00':
+            return "utf-32-le"
+        elif beginning[0:3] == b'\xef\xbb\xbf':
+            return "utf-8-sig"
+        elif beginning[0:2] == b'\xff\xfe':
+            return "utf-16-le"
+        elif beginning[0:2] == b'\xfe\xff':
+            return "utf-16-le"
+        else:
+            return 'utf-8'
+
+
 def main():
     """
     Supplied with valid CSV file containing 3 or 4 columns of data, iterates over rows and creates or updates groups
@@ -263,7 +282,7 @@ def main():
 
     file = args.file
 
-    with open(file, newline='') as csvfile:
+    with open(file, newline='', encoding=det_bom(file)) as csvfile:
         # Iterate through the CSV building a dictionary of groups
         reader = csv.reader(csvfile)
         csv_groups_dict = dict()

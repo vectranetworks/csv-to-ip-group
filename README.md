@@ -47,6 +47,8 @@ character.
 
 An alternate substitution character can be specified with the **--sub_char** cli flag.
 
+The script attempts to identify a supported character set encoding, defaults to unicode when unable to identify an 
+encoding from a BOM.
 
 ## Running
 
