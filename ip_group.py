@@ -413,11 +413,12 @@ def main():
                         **groups_update,
                         **{
                             group: {
-                                "id": group_exists_results["id"],
-                                "subnets": update_value["subnets"],
+                                    'id': group_exists_results['id'],
+                                    'subnets': update_value
+                                    }
                             }
-                        },
-                    }
+                     }
+
                 elif update_needed == -1:
                     # Group in Detect contains subnets CSV does not
                     if args.authoritative:
@@ -427,14 +428,14 @@ def main():
                             )
                         )
                         groups_update_overwrite = {
-                            **groups_update,
+                            **groups_update_overwrite,
                             **{
                                 group: {
-                                    "id": group_exists_results["id"],
-                                    "subnets": csv_groups_dict[group]["subnets"],
-                                    "desc": csv_groups_dict[group]["desc"],
+                                        'id': group_exists_results['id'],
+                                        'subnets': csv_groups_dict[group]['subnets'],
+                                        'desc': csv_groups_dict[group]['desc']
                                 }
-                            },
+                            }
                         }
 
                 elif update_needed == 2 and args.authoritative:
@@ -443,17 +444,18 @@ def main():
                         "2a:Group exists and has extra subnets and missing. id:{}, group:{}, subnets:{}".format(
                             group_exists_results["id"], group, update_value
                         )
-                    )
-                    groups_update_overwrite = {
-                        **groups_update,
-                        **{
-                            group: {
-                                "id": group_exists_results["id"],
-                                "subnets": csv_groups_dict[group]["subnets"],
-                                "desc": csv_groups_dict[group]["desc"],
+                        groups_update_overwrite = {
+                            **groups_update_overwrite,
+                            **{
+                                group: {
+                                        'id': group_exists_results['id'],
+                                        'subnets': csv_groups_dict[group]['subnets'],
+                                        'desc': csv_groups_dict[group]['desc']
+                                }
                             }
-                        },
-                    }
+                        }
+
+
                 elif update_needed == 2 and not args.authoritative:
                     # Group in Detect contains subnets CSV does not and is missing subnets from CSV, not authoritative
                     # so update needed
@@ -466,10 +468,10 @@ def main():
                         **groups_update,
                         **{
                             group: {
-                                "id": group_exists_results["id"],
-                                "subnets": update_value,
+                                     'id': group_exists_results['id'],
+                                     'subnets': update_value
                             }
-                        },
+                        }
                     }
             else:
                 # Group does not exist, creating
@@ -483,15 +485,15 @@ def main():
                 groups_create = {
                     **groups_create,
                     **{
-                        group: {
-                            "subnets": csv_groups_dict[group].get("subnets"),
-                            "desc": csv_groups_dict[group].get("desc"),
-                        }
-                    },
+                         group: {
+                            'subnets': csv_groups_dict[group].get('subnets'),
+                            'desc': csv_groups_dict[group].get('desc')
+                         }
+                    }
                 }
-        LOG.debug("update:{}".format(groups_update))
-        LOG.debug("create:{}".format(groups_create))
-        LOG.debug("overwrite:{}".format(groups_update_overwrite))
+        LOG.debug('update:{}'.format(groups_update))
+        LOG.debug('create:{}'.format(groups_create))
+        LOG.debug('overwrite:{}'.format(groups_update_overwrite))
         # Iterate over each dictionary that contains data
 
         if not args.dryrun:
