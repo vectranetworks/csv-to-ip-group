@@ -427,7 +427,7 @@ def main():
                             )
                         )
                         groups_update_overwrite = {
-                            **groups_update,
+                            **groups_update_overwrite,
                             **{
                                 group: {
                                     "id": group_exists_results["id"],
@@ -445,7 +445,7 @@ def main():
                         )
                     )
                     groups_update_overwrite = {
-                        **groups_update,
+                        **groups_update_overwrite,
                         **{
                             group: {
                                 "id": group_exists_results["id"],
